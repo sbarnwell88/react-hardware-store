@@ -5,20 +5,18 @@ import Product from './Product';
 class ProductList extends Component {
     render() {
         const productList = this.props.productList;
-        const shopperView = this.props.shopperView;
-        const cartView = this.props.cartView;
   
         const productComponents = productList.map((product, index) => {
             return <Product
+                viewMode={this.props.viewMode}
                 productName={product.productName}
                 description={product.description}
                 price={product.price}
                 id={index}
                 key={index}
                 deleteProduct={this.props.deleteProduct}
-                shopperView={shopperView}
-                cartView={cartView}
                 addProductToCart={this.props.addProductToCart}
+                removeProductFromCart={this.props.removeProductFromCart}
                 />
     }
     );

@@ -10,10 +10,39 @@
     this.props.addProductToCart(this.props.id);
   }
 
-  _cartView = () => {
-        const cartView = !this.state.cartView;
-        this.setState({cartView});
+  _removeFromCart = () => {
+    this.props.removeProductFromCart(this.props.index);
+  };
+
+  _showOptions = () => {
+    const viewMode = this.props.viewMode;
+
+    const adminOptions =
+        <div>
+          <button onClick={this._deleteProduct}>Delete</button>
+        </div>;
+
+    const shopOptions =
+        <div>
+          <button onClick={this._addToCart}>Add To Cart</button>
+        </div>;
+
+    const cartOptions =
+        <div>
+          <button onClick={this._removeFromCart}>Remove From Cart</button>
+        </div>;
+
+    switch (viewMode) {
+      case 'ADMIN':
+        return adminOptions;
+      case 'SHOP':
+        return shopOptions;
+      case 'CART':
+        return cartOptions;
+      default:
+        return null;
     }
+  };
 
    render() {
      const productName = this.props.productName;
@@ -22,22 +51,13 @@
      const id = this.props.id;
  
      return (
-         <div>
+         <div className="product-display">
            <h3>{productName}</h3>
            <div>{description}</div>
            <div>{price}</div>
 
-           {this.props.shopperView ?  
-           <button onClick={this._addOneProduct}>Add to Cart</button>
-           :
-           <button onClick={this._deleteOneProduct}>Delete</button>
-           }
+           {this._showOptions()}
 
-           {this.props.cartView ?
-           <button onClick={this._cartView}>Shopping Cart</button>
-           :
-           null
-           }
          </div>
      );
  

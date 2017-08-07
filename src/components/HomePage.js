@@ -1,120 +1,136 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+
 import AdminView from './AdminView';
 import ShopView from './ShopView';
 import CartView from './CartView';
 
-class Homepage extends Component {
+class HomePage extends Component {
 
-   constructor() {
-        super();
- 
-        this.state = {
-            itemCurrentlyOnSale: 'A Hammer',
-            editSaleItem: true,
-            shopperView: true,
-            cartView: true,
-            productList: [
- 		        {
- 		        productName: 'Hammer',
- 		        description: 'Itsa hammer',
- 		        price: 12.3,
- 		        },
- 		        {
- 		        productName: 'Nail',
- 		        description: 'Itsa nail',
- 		        price: 0.12,
- 		        }
- 	        ]
-        };
-    }
+  constructor() {
+    super();
 
-    _toggleEditSaleItem = () => {
-     const editSaleItem = !this.state.editSaleItem;
-     this.setState({editSaleItem});
-   };
-
-   _handleItemCurrentlyOnSaleChange = (event) => {
- 	    const itemCurrentlyOnSale = event.target.value;
- 	
- 	    this.setState({itemCurrentlyOnSale});
-       };
-    
-    _addNewProductToProductList = (newProduct) => {
-     const productList = [...this.state.productList];
-     productList.push(newProduct);
-     this.setState({productList});
+    this.state = {
+      itemCurrentlyOnSale: 'A Hammer',
+      editSaleItem: false,
+      showAdminView: false,
+      productList: [
+        {
+          productName: 'Hammer',
+          description: 'Itsa hammer!',
+          price: 12.3,
+        },
+        {
+          productName: 'Nail',
+          description: 'Itsa nail!',
+          price: 0.12,
+        }
+      ],
+      cartList: [],
     };
+  }
 
-    _deleteProduct = (productKey) => {
-        const productList = [...this.state.productList];
-        productList.splice(productKey, 1);
-        this.setState({productList});
-    };
+  _toggleEditSaleItem = () => {
+    const editSaleItem = !this.state.editSaleItem;
+    this.setState({editSaleItem});
+  };
 
-    _shopViews = () => {
-        const shopperView = !this.state.shopperView;
-        this.setState({shopperView});
-    }
+  _toggleAdminView = () => {
+    const showAdminView = !this.state.showAdminView;
+    this.setState({showAdminView});
+  };
 
-    _cartView = () => {
-        const cartView = !this.state.cartView;
-        this.setState({cartView});
-    }
+  _handleItemCurrentlyOnSaleChange = (event) => {
+    const itemCurrentlyOnSale = event.target.value;
 
-    _addProductToCart = (index) => {
-        const product = [...this.state.productList[index]];
-        const cart = [...this.state.cart];
+    this.setState({itemCurrentlyOnSale});
+  };
 
-        cart.push(product);
-        this.setState({cart});
-    }
-    
+  _addNewProductToProductList = (newProduct) => {
+    const productList = [...this.state.productList];
+    productList.push(newProduct);
+    this.setState({productList});
+  };
 
-    render() {
-        return (
+  _deleteProductFromListByIndex = (productToDelete) => {
+    const productList = [...this.state.productList];
+    productList.splice(productToDelete, 1);
+    this.setState({productList});
+  };
+
+  _addProductToCart = (index) => {
+    const product = {...this.state.productList[index]};
+    const cartList = [...this.state.cartList];
+
+    cartList.push(product);
+
+    this.setState({cartList});
+  };
+
+  _removeProductFromCart = (index) => {
+    const cartList = [...this.state.cartList];
+
+    cartList.splice(index, 1);
+
+    this.setState({cartList});
+  };
+
+  render() {
+
+    const adminView = <AdminView
+        productList={this.state.productList}
+        addNewProductToProductList={this._addNewProductToProductList}
+        deleteProductFromListByIndex={this._deleteProductFromListByIndex}/>;
+
+    const shopView = <ShopView
+        productList={this.state.productList}
+        addProductToCart={this._addProductToCart}/>;
+
+    return (
         <div>
-           <h1>My Hardware Store</h1>
-           <div>
-             <span>Currently On Sale: { this.state.itemCurrentlyOnSale }!</span>
-             <span><button onClick={this._toggleEditSaleItem}>
-                 {this.state.editSaleItem ? "Hide":"Edit Sale Item"}
-                 </button>
-             </span>
-             <span><button onClick={this._shopViews}>
-                 {this.state.shopperView ? "Admin View":"Shop View" }
-                 </button></span>
-            <div>
+          <div>
+            <div id="home-page-nav">
+              <h1>Hardware Store</h1>
+              <span>Currently On Sale: {this.state.itemCurrentlyOnSale}!</span>
+
+              <div>
                 {
-                this.state.editSaleItem ?
-                    <div>
- 	                    <input 
- 		                onChange={this._handleItemCurrentlyOnSaleChange}
- 		                value={this.state.itemCurrentlyOnSale} 
- 		                type="text"
- 	                    />
-                    </div>
-                    : null
+                  this.state.editSaleItem ? <div>
+                        <input
+                            onChange={this._handleItemCurrentlyOnSaleChange}
+                            value={this.state.itemCurrentlyOnSale}
+                            type="text"
+                        />
+                      </div>
+                      : null
                 }
-                {this.state.shopperView ? 
-                <ShopView
-                    productList={this.state.productList} 
-                    shopperView = {this.state.shopperView}
-                    cartView = {this.state.cartView}
-                    />
-                    :
-                    <AdminView 
- 	                productList={this.state.productList} 
- 	                addNewProductToProductList={this._addNewProductToProductList}
-                    deleteProduct = {this._deleteProduct}/> }
-                <CartView
-                    productList={this.state.cart}
-                    addProductToCart={this._addProductToCart}
-                    />
-             </div>
-           </div>
-         </div>
-        )
-    }
+              </div>
+              <div>
+                <button onClick={this._toggleEditSaleItem}>
+                  {this.state.editSaleItem
+                      ? 'Hide'
+                      : 'Edit Sale Item'}
+                </button>
+              </div>
+              <div>
+                <button onClick={this._toggleAdminView}>
+                  {this.state.showAdminView
+                      ? 'Show Shop View'
+                      : 'Show Admin View'}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="view-container">
+            {this.state.showAdminView ? adminView : shopView}
+
+            <CartView
+                productList={this.state.cartList}
+                removeProductFromCart={this._removeProductFromCart}/>
+          </div>
+        </div>
+    );
+  }
 }
 
-export default Homepage;
+export default HomePage;
